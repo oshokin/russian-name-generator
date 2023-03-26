@@ -25,7 +25,7 @@ go get github.com/oshokin/russian-name-generator
 ### First, import the package:
 
 ```go
-import rus_name_gen "github.com/[username]/russian-name-generator"
+import rus_name_gen "github.com/oshokin/russian-name-generator"
 ```
 
 ### Then, you can generate a random name:
@@ -35,6 +35,7 @@ name := rus_name_gen.Name(rus_name_gen.GenderAny, true)
 ```
 
 This will return a random name for any gender, excluding rare names.
+
 Parameters:
 
 `gender` (`Gender`): The gender for the generated name. Valid options are `GenderAny`, `GenderMale`, and `GenderFemale`.
@@ -48,6 +49,7 @@ surname := rus_name_gen.Surname(rus_name_gen.GenderMale)
 ```
 
 This will return a random surname for a male.
+
 Parameters:
 
 `gender` (`Gender`): The gender for the generated surname. Valid options are `GenderAny`, `GenderMale`, and `GenderFemale`.
@@ -59,6 +61,7 @@ patronymic := rus_name_gen.Patronymic(rus_name_gen.Any, false)
 ```
 
 This will return a random patronymic for any gender, including rare names.
+
 Parameters:
 
 `gender` (`Gender`): The gender for the generated patronymic. Valid options are `GenderAny`, `GenderMale`, and `GenderFemale`.
@@ -73,6 +76,7 @@ transliteratedText := russian_name_generator.Transliterate(text)
 ```
 
 This will return a transliterated string in Latin characters.
+
 Parameters:
 
 `text` (`string`): The Russian text to be transliterated to Latin characters.
@@ -140,7 +144,7 @@ import (
 	"sync"
 	"time"
 
-	rus_name_gen "github.com/[username]/russian-name-generator"
+	rus_name_gen "github.com/oshokin/russian-name-generator"
 )
 
 func main() {
