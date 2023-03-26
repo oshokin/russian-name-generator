@@ -10,7 +10,7 @@ func Example() {
 	Seed(2)
 	fmt.Println("Surname:", Surname(GenderMale))
 	fmt.Println("Name:", Name(GenderMale, true))
-	fmt.Println("Patronymic:", Patronymic(GenderMale, true))
+	fmt.Println("Patronymic:", Patronymic(false, true))
 	// Output:
 	// Surname: Палатов
 	// Name: Руслан
@@ -24,7 +24,7 @@ func ExampleNew() {
 	// All global functions are also available in the structs methods
 	fmt.Println("Surname:", fake.Surname(GenderMale))
 	fmt.Println("Name:", fake.Name(GenderMale, true))
-	fmt.Println("Patronymic:", fake.Patronymic(GenderMale, true))
+	fmt.Println("Patronymic:", fake.Patronymic(false, true))
 	// Output:
 	// Surname: Палатов
 	// Name: Руслан
@@ -37,7 +37,7 @@ func ExampleNewUnlocked() {
 	// All global functions are also available in the structs methods
 	fmt.Println("Surname:", fake.Surname(GenderMale))
 	fmt.Println("Name:", fake.Name(GenderMale, true))
-	fmt.Println("Patronymic:", fake.Patronymic(GenderMale, true))
+	fmt.Println("Patronymic:", fake.Patronymic(false, true))
 	// Output:
 	// Surname: Губырин
 	// Name: Олег
@@ -58,7 +58,7 @@ func ExampleNewCrypto() {
 	// All global functions are also available in the structs methods
 	fmt.Println("Surname:", fake.Surname(GenderMale))
 	fmt.Println("Name:", fake.Name(GenderMale, true))
-	fmt.Println("Patronymic:", fake.Patronymic(GenderMale, true))
+	fmt.Println("Patronymic:", fake.Patronymic(false, true))
 
 	// Cannot output example as crypto/rand cant be predicted
 }
@@ -70,7 +70,7 @@ func TestNewCrypto(t *testing.T) {
 	// All global functions are also available in the structs methods
 	surname := fake.Surname(GenderMale)
 	name := fake.Name(GenderMale, true)
-	patronymic := fake.Patronymic(GenderMale, true)
+	patronymic := fake.Patronymic(false, true)
 
 	if name == "" || surname == "" || patronymic == "" {
 		t.Error("One of the values was empty")
@@ -96,7 +96,7 @@ func ExampleNewCustom() {
 	// All global functions are also available in the structs methods
 	fmt.Println("Surname:", fake.Surname(GenderMale))
 	fmt.Println("Name:", fake.Name(GenderMale, true))
-	fmt.Println("Patronymic:", fake.Patronymic(GenderMale, true))
+	fmt.Println("Patronymic:", fake.Patronymic(false, true))
 	// Output:
 	// Surname: Абабилов
 	// Name: Александр
