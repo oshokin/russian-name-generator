@@ -15,7 +15,7 @@ func (f *Faker) Surname(gender Gender) string {
 }
 
 func surname(r *rand.Rand, gender Gender) string {
-	dataSetNames := make([]string, 0, 4)
+	dataSetNames := make([]string, 0, 2)
 	switch gender {
 	case GenderMale:
 		dataSetNames = append(dataSetNames, "male_surname")
