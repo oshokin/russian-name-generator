@@ -142,30 +142,33 @@ package main
 import (
 	"fmt"
 	"sync"
-	"time"
 
 	rus_name_gen "github.com/oshokin/russian-name-generator"
 )
 
 func main() {
-	// Generate 100 full names concurrently
-	var wg sync.WaitGroup
-	wg.Add(100)
-	for i := 0; i < 100; i++ {
-		go func() {
+	var (
+		// Generate 100 full names concurrently
+		namesCount = 100
+		wg         sync.WaitGroup
+	)
+
+	wg.Add(namesCount)
+	for i := 0; i < namesCount; i++ {
+		go func(i int) {
 			defer wg.Done()
 
 			gender := rus_name_gen.GenderMale
 			if i%2 == 0 {
-				gender = rus_name_gen.GenderFeMale
+				gender = rus_name_gen.GenderFemale
 			}
-            
-            name := rus_name_gen.Name(gender, false)
-			patronymic := rus_name_gen.Patronymic(gender, false)
+
+			name := rus_name_gen.Name(gender, false)
+			patronymic := rus_name_gen.Patronymic(gender == rus_name_gen.GenderFemale, false)
 			surname := rus_name_gen.Surname(gender)
 
 			fmt.Printf("%s %s %s\n", name, patronymic, surname)
-		}()
+		}(i)
 	}
 
 	wg.Wait()
