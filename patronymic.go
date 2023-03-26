@@ -2,16 +2,16 @@ package russian_name_generator
 
 import "math/rand"
 
-// Patronymic generates a patronymic name (middle name) based on the given gender and excludeRareNames flag.
-// If gender is Any, it randomly selects male or female gender.
-// Rare names are excluded if excludeRareNames is true.
+// Patronymic generates a random patronymic name based on the specified parameters.
+// If isFeminine is true, the generated name will be for a female name, otherwise for a male name.
+// If excludeRareNames is true, rare names will be excluded when choosing the base name for the patronymic.
 func Patronymic(isFeminine bool, excludeRareNames bool) string {
 	return patronymic(globalFaker.Rand, isFeminine, excludeRareNames)
 }
 
-// Patronymic generates a patronymic name (middle name) based on the given gender and excludeRareNames flag.
-// If gender is Any, it randomly selects male or female gender.
-// Rare names are excluded if excludeRareNames is true.
+// Patronymic generates a random patronymic name based on the specified parameters.
+// If isFeminine is true, the generated name will be for a female name, otherwise for a male name.
+// If excludeRareNames is true, rare names will be excluded when choosing the base name for the patronymic.
 func (f *Faker) Patronymic(isFeminine bool, excludeRareNames bool) string {
 	return patronymic(f.Rand, isFeminine, excludeRareNames)
 }

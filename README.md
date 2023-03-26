@@ -38,9 +38,9 @@ This will return a random name for any gender, excluding rare names.
 
 Parameters:
 
-`gender` (`Gender`): The gender for the generated name. Valid options are `GenderAny`, `GenderMale`, and `GenderFemale`.
+- `gender` (`Gender`): The gender for the generated name. Valid options are `GenderAny`, `GenderMale`, and `GenderFemale`.
 
-`excludeRareNames` (`bool`): Whether or not to exclude rare names from the dataset.
+- `excludeRareNames` (`bool`): Whether or not to exclude rare names from the dataset.
 
 ### You can also generate a random surname:
 
@@ -52,21 +52,21 @@ This will return a random surname for a male.
 
 Parameters:
 
-`gender` (`Gender`): The gender for the generated surname. Valid options are `GenderAny`, `GenderMale`, and `GenderFemale`.
+- `gender` (`Gender`): The gender for the generated surname. Valid options are `GenderAny`, `GenderMale`, and `GenderFemale`.
 
 ### Finally, you can generate a random patronymic:
 
 ```go
-patronymic := rus_name_gen.Patronymic(rus_name_gen.Any, false)
+patronymic := rus_name_gen.Patronymic(true, false)
 ```
 
-This will return a random patronymic for any gender, including rare names.
+This will return a random patronymic for a female name, including rare base names.
 
 Parameters:
 
-`gender` (`Gender`): The gender for the generated patronymic. Valid options are `GenderAny`, `GenderMale`, and `GenderFemale`.
+- `isFeminine` (`bool`): Whether the patronymic should be feminine (i.e., for a female name). If false, the method generates a masculine patronymic.
 
-`excludeRareNames` (`bool`): Whether or not to exclude rare names from the dataset.
+- `excludeRareNames` (`bool`): Whether to exclude rare names when choosing the base name for the patronymic.
 
 ### Also, you can transliterate a string from Russian to Latin letters:
 
@@ -79,7 +79,7 @@ This will return a transliterated string in Latin characters.
 
 Parameters:
 
-`text` (`string`): The Russian text to be transliterated to Latin characters.
+- `text` (`string`): The Russian text to be transliterated to Latin characters.
 
 ## Seed
 
