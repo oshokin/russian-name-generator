@@ -215,14 +215,14 @@ func main() {
 	wg.Add(namesCount)
 
 	for i := 0; i < namesCount; i++ {
-		go func(i int) {
+		go func() {
 			defer wg.Done()
 
 			person := rus_name_gen.Person(nil)
-			fmt.Printf("%s %s %s\n", person.Name,
+			fmt.Println(person.Name,
 				person.Patronymic,
 				person.Surname)
-		}(i)
+		}()
 	}
 
 	wg.Wait()

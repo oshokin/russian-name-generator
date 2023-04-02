@@ -341,7 +341,12 @@ func TestGetPatronymicFromName(t *testing.T) {
 		},
 		{
 			name:     "Мина",
-			expected: "Минович"},
+			expected: "Минович",
+		},
+		{
+			name:     "Ян",
+			expected: "Янович",
+		},
 	}
 
 	for _, test := range tests {

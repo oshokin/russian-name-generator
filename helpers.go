@@ -68,14 +68,14 @@ func getPatronymicFromName(name string, isFeminine bool) string {
 	)
 
 	var (
-		lastRune               = runeName[runeCount-1]
+		lastRune               = safeRuneAt(runeName, runeCount-1)
 		lastLetter             = string(lastRune)
-		penultimateLetter      = string(runeName[runeCount-2 : runeCount-1])
-		lastTwoLetters         = string(runeName[runeCount-2:])
-		lastThreeLetters       = string(runeName[runeCount-3:])
-		allButLastLetter       = string(runeName[:runeCount-1])
-		allButLastTwoLetters   = string(runeName[:runeCount-2])
-		allButLastThreeLetters = string(runeName[:runeCount-3])
+		penultimateLetter      = string(safeRuneSlice(runeName, runeCount-2, runeCount-1))
+		lastTwoLetters         = string(safeRuneSlice(runeName, runeCount-2, runeCount))
+		lastThreeLetters       = string(safeRuneSlice(runeName, runeCount-3, runeCount))
+		allButLastLetter       = string(safeRuneSlice(runeName, 0, runeCount-1))
+		allButLastTwoLetters   = string(safeRuneSlice(runeName, 0, runeCount-2))
+		allButLastThreeLetters = string(safeRuneSlice(runeName, 0, runeCount-3))
 		suffix                 = "ич"
 	)
 
@@ -112,10 +112,10 @@ func getPatronymicFromName(name string, isFeminine bool) string {
 		lastTwoLetters == iyaSuffix:
 		whoseSuffix = evSuffix
 		baseOfName = allButLastLetter
-		letterBeforeEnding := runeName[runeCount-3]
+		letterBeforeEnding := safeRuneAt(runeName, runeCount-3)
 		isConsonantBeforeEnding := isRussianConsonant(letterBeforeEnding)
-		isVowelBeforeConsonant := isRussianVowel(runeName[runeCount-4])
-		isNTBeforeEnding := string(runeName[runeCount-4:runeCount-2]) == "нт"
+		isVowelBeforeConsonant := isRussianVowel(safeRuneAt(runeName, runeCount-4))
+		isNTBeforeEnding := string(safeRuneSlice(runeName, runeCount-4, runeCount-2)) == "нт"
 		isExceptionConsonant := strings.ContainsRune("кхц", letterBeforeEnding)
 
 		if lastTwoLetters == "ий" &&
@@ -186,6 +186,38 @@ func getPatronymicFromName(name string, isFeminine bool) string {
 			[]string{baseOfName,
 				whoseSuffix,
 				suffix}, ""))
+}
+
+func safeRuneSlice(runes []rune, left, right int) []rune {
+	if len(runes) == 0 || right < 0 {
+		return nil
+	}
+
+	if left < 0 {
+		left = 0
+	}
+
+	if right > len(runes) {
+		right = len(runes)
+	}
+
+	return runes[left:right]
+}
+
+func safeRuneAt(runes []rune, index int) rune {
+	if len(runes) == 0 {
+		return 0
+	}
+
+	if index > len(runes)-1 {
+		index = len(runes) - 1
+	}
+
+	if index < 0 {
+		return 0
+	}
+
+	return runes[index]
 }
 
 func getRandValue(r *rand.Rand, dataSetName []string) string {
