@@ -79,16 +79,30 @@ This will return a random gender.
 ### Finally, you can generate a random person info:
 
 ```go
-person := rus_name_gen.Person(&rus_name_gen.PersonFields{
-	Name:             true,
-	Surname:          true,
-	Patronymic:       true,
-	Gender:           rus_name_gen.GenderAny,
-	ExcludeRareNames: false,
-})
+personInfo := rus_name_gen.Person(nil)
 ```
 
-This will return a PersonInfo struct with random name, surname, patronymic, and gender.
+This will return a random person's information with the following defaults:
+
+- `Name` (`bool`): `true`
+- `Surname` (`bool`): `true`
+- `Patronymic` (`bool`): `true`
+- `Gender` (`GenderType`): `GenderAny`
+- `ExcludeRareNames` (`bool`): `false`
+
+You can also customize the fields using the fields argument:
+
+```go
+fields := &rus_name_gen.PersonFields{
+    Name:             true,
+    Surname:          true,
+    Patronymic:       false,
+    Gender:           rus_name_gen.GenderMale,
+    ExcludeRareNames: true,
+}
+
+personInfo := rus_name_gen.Person(fields)
+```
 
 Parameters:
 
