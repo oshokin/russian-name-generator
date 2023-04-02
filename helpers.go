@@ -10,23 +10,25 @@ import (
 	"github.com/oshokin/russian-name-generator/data"
 )
 
-// Seed will set the global random value. Setting seed to 0 will use crypto/rand
+// Seed will set the global random value.
+// Setting seed to 0 will use crypto/rand.
 func Seed(seed int64) {
 	if seed == 0 {
-		binary.Read(crand.Reader, binary.BigEndian, &seed)
+		_ = binary.Read(crand.Reader, binary.BigEndian, &seed)
 		globalFaker.Rand.Seed(seed)
 	} else {
 		globalFaker.Rand.Seed(seed)
 	}
 }
 
-// Transliterate transliterates string from Russian to Latin letters
+// Transliterate transliterates string from Russian to Latin letters.
 func Transliterate(text string) string {
 	if len(text) == 0 {
 		return ""
 	}
 
 	var sb strings.Builder
+
 	sb.Grow(len(text))
 
 	for _, rc := range text {
@@ -77,10 +79,21 @@ func getPatronymicFromName(name string, isFeminine bool) string {
 		suffix                 = "ич"
 	)
 
+	const (
+		aLetter    = "а"
+		yaLetter   = "я"
+		ailSuffix  = "аил"
+		evSuffix   = "ев"
+		yeyaSuffix = "ея"
+		iyaSuffix  = "ия"
+		naSuffix   = "на"
+		ovSuffix   = "ов"
+	)
+
 	if isFeminine {
-		endsWithAorYa := lastLetter == "а" || lastLetter == "я"
-		endsWithYeya := lastTwoLetters == "ея" || lastTwoLetters == "ия"
-		suffix = "на"
+		endsWithAorYa := lastLetter == aLetter || lastLetter == yaLetter
+		endsWithYeya := lastTwoLetters == yeyaSuffix || lastTwoLetters == iyaSuffix
+		suffix = naSuffix
 
 		if endsWithAorYa && !endsWithYeya {
 			suffix = "ична"
@@ -95,9 +108,9 @@ func getPatronymicFromName(name string, isFeminine bool) string {
 
 	switch {
 	case lastLetter == "й" ||
-		lastTwoLetters == "ея" ||
-		lastTwoLetters == "ия":
-		whoseSuffix = "ев"
+		lastTwoLetters == yeyaSuffix ||
+		lastTwoLetters == iyaSuffix:
+		whoseSuffix = evSuffix
 		baseOfName = allButLastLetter
 		letterBeforeEnding := runeName[runeCount-3]
 		isConsonantBeforeEnding := isRussianConsonant(letterBeforeEnding)
@@ -120,44 +133,48 @@ func getPatronymicFromName(name string, isFeminine bool) string {
 		baseOfName = allButLastLetter
 
 		switch {
-		case (lastLetter == "а" || lastLetter == "я") &&
+		case (lastLetter == aLetter || lastLetter == yaLetter) &&
 			getSyllablesCount(name) <= 2 &&
 			!isSpecialName &&
 			(indexOfA < 0 || indexOfA > runeCount-2):
 			if isFeminine {
 				whoseSuffix = "ин"
 			}
-		case lastLetter == "а" &&
+		case lastLetter == aLetter &&
 			strings.ContainsAny(penultimateLetter, "лмн"):
-			whoseSuffix = "ов"
+			whoseSuffix = ovSuffix
+
 			if isFeminine {
-				suffix = "на"
+				suffix = naSuffix
 			}
 		case strings.ContainsAny(lastLetter, "ео"):
 			whoseSuffix = "в"
 			baseOfName += lastLetter
 		case lastLetter == "и":
-			whoseSuffix = "ев"
+			whoseSuffix = evSuffix
 			baseOfName += lastLetter
 		}
 	case isLastRuneExceptionConsonant || lastLetter == "ь":
-		whoseSuffix = "ев"
+		whoseSuffix = evSuffix
 		baseOfName = allButLastLetter
+
 		if isLastRuneExceptionConsonant {
 			baseOfName = name
 		}
 	default:
-		if lastTwoLetters != "ов" && lastTwoLetters != "ев" {
-			whoseSuffix = "ов"
+		if lastTwoLetters != ovSuffix && lastTwoLetters != evSuffix {
+			whoseSuffix = ovSuffix
 		}
+
 		switch {
 		case lastThreeLetters == "иил":
 			baseOfName = allButLastTwoLetters + lastLetter
-		case lastThreeLetters == "аил" || lastThreeLetters == "уил":
+		case lastThreeLetters == ailSuffix || lastThreeLetters == "уил":
 			baseOfName = allButLastThreeLetters + "о"
-			if lastThreeLetters == "аил" {
+			if lastThreeLetters == ailSuffix {
 				baseOfName = allButLastTwoLetters
 			}
+
 			baseOfName += "йл"
 		default:
 			baseOfName = name
@@ -178,10 +195,36 @@ func getRandValue(r *rand.Rand, dataSetName []string) string {
 	}
 
 	dataSet := dataSets[r.Intn(len(dataSets))]
+
 	return dataSet[r.Intn(len(dataSet))]
 }
 
-func getSyllablesCount(name string) (count uint8) {
+func randIntRange(r *rand.Rand, min, max int) int {
+	if min == max {
+		return min
+	}
+
+	if min > max {
+		ogmin := min
+		min = max
+		max = ogmin
+	}
+
+	if max-min+1 > 0 {
+		return min + int(r.Int63n(int64(max-min+1)))
+	}
+
+	for {
+		v := int(r.Uint64())
+		if (v >= min) && (v <= max) {
+			return v
+		}
+	}
+}
+
+func getSyllablesCount(name string) uint8 {
+	var count uint8
+
 	for _, letter := range name {
 		if !isRussianVowel(letter) {
 			continue
@@ -190,7 +233,7 @@ func getSyllablesCount(name string) (count uint8) {
 		count++
 	}
 
-	return
+	return count
 }
 
 func isRussianVowel(symbol rune) bool {

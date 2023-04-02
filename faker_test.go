@@ -79,9 +79,15 @@ func TestNewCrypto(t *testing.T) {
 
 type customRand struct{}
 
-func (c *customRand) Seed(seed int64) {}
-func (c *customRand) Uint64() uint64  { return 8675309 }
-func (c *customRand) Int63() int64    { return int64(c.Uint64() & ^uint64(1<<63)) }
+func (c *customRand) Seed(_ int64) {}
+
+func (c *customRand) Uint64() uint64 {
+	return 8675309
+}
+
+func (c *customRand) Int63() int64 {
+	return int64(c.Uint64() & ^uint64(1<<63))
+}
 
 func ExampleNewCustom() {
 	// Setup stuct and methods required to meet interface needs
@@ -112,8 +118,7 @@ func TestSetGlobalFaker(t *testing.T) {
 	cryptoFaker := NewCrypto()
 	SetGlobalFaker(cryptoFaker)
 
-	name := Name(GenderMale, true)
-	if name == "" {
+	if name := Name(GenderMale, true); name == "" {
 		t.Error("Name was empty")
 	}
 
@@ -121,13 +126,17 @@ func TestSetGlobalFaker(t *testing.T) {
 	SetGlobalFaker(New(0))
 }
 
-func TestConcurrency(t *testing.T) {
-	var setupComplete sync.WaitGroup
+func TestConcurrency(_ *testing.T) {
+	var (
+		setupComplete sync.WaitGroup
+		wg            sync.WaitGroup
+	)
+
 	setupComplete.Add(1)
 
-	var wg sync.WaitGroup
 	for i := 0; i < 10000; i++ {
 		wg.Add(1)
+
 		go func() {
 			setupComplete.Wait()
 			Name(GenderMale, true)

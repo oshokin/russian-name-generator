@@ -38,11 +38,11 @@ This will return a random name for any gender, excluding rare names.
 
 Parameters:
 
-- `gender` (`Gender`): The gender for the generated name. Valid options are `GenderAny`, `GenderMale`, and `GenderFemale`.
+- `gender` (`GenderType`): The gender for the generated name. Valid options are `GenderAny`, `GenderMale`, and `GenderFemale`.
 
 - `excludeRareNames` (`bool`): Whether or not to exclude rare names from the dataset.
 
-### You can also generate a random surname:
+### You can generate a random surname:
 
 ```go
 surname := rus_name_gen.Surname(rus_name_gen.GenderMale)
@@ -52,9 +52,9 @@ This will return a random surname for a male.
 
 Parameters:
 
-- `gender` (`Gender`): The gender for the generated surname. Valid options are `GenderAny`, `GenderMale`, and `GenderFemale`.
+- `gender` (`GenderType`): The gender for the generated surname. Valid options are `GenderAny`, `GenderMale`, and `GenderFemale`.
 
-### Finally, you can generate a random patronymic:
+### You can generate a random patronymic:
 
 ```go
 patronymic := rus_name_gen.Patronymic(true, false)
@@ -67,6 +67,42 @@ Parameters:
 - `isFeminine` (`bool`): Whether the patronymic should be feminine (i.e., for a female name). If false, the method generates a masculine patronymic.
 
 - `excludeRareNames` (`bool`): Whether to exclude rare names when choosing the base name for the patronymic.
+
+### You can generate a random gender:
+
+```go
+gender := rus_name_gen.Gender()
+```
+
+This will return a random gender.
+
+### Finally, you can generate a random person info:
+
+```go
+person := rus_name_gen.Person(&rus_name_gen.PersonFields{
+	Name:             true,
+	Surname:          true,
+	Patronymic:       true,
+	Gender:           rus_name_gen.GenderAny,
+	ExcludeRareNames: false,
+})
+```
+
+This will return a PersonInfo struct with random name, surname, patronymic, and gender.
+
+Parameters:
+
+- `fields` (`*PersonFields`): A pointer to a PersonFields struct with the following fields:
+
+  - `Name` (`bool`): Whether or not to include a name in the PersonInfo struct.
+
+  - `Surname` (`bool`): Whether or not to include a surname in the PersonInfo struct.
+
+  - `Patronymic` (`bool`): Whether or not to include a patronymic in the PersonInfo struct.
+
+  - `Gender` (`GenderType`): The gender for the generated PersonInfo struct. Valid options are `GenderAny`, `GenderMale`, and `GenderFemale`.
+
+  - `ExcludeRareNames` (`bool`): Whether or not to exclude rare names from the dataset.
 
 ### Also, you can transliterate a string from Russian to Latin letters:
 
@@ -83,16 +119,16 @@ Parameters:
 
 ## Seed
 
-If you are using the default global usage and dont care about seeding no need to set anything.
+If you are using the default global usage and don't care about seeding, there's no need to set anything.
 `russian-name-generator` will seed it with a cryptographically secure number.
 
-If you need a reproducible outcome you can set it via the Seed function call. Every example in
-this repo sets it for testing purposes.
+If you need a reproducible outcome, you can set it via the Seed function call.
+Every example in this repository sets it for testing purposes.
 
 ```go
 import rus_name_gen "github.com/oshokin/russian-name-generator"
 
-rus_name_gen.Seed(0) // If 0 will use crypto/rand to generate a number
+rus_name_gen.Seed(0) // If 0, crypto/rand is used to generate a number
 
 // or
 
@@ -101,31 +137,34 @@ rus_name_gen.Seed(14000088) // Set it to whatever number you want
 
 ## Random Sources
 
-`russian-name-generator` has a few rand sources, by default it uses math.Rand and uses mutex locking to allow for safe goroutines.
+`russian-name-generator` supports multiple sources for generating random numbers. 
+By default, it uses `math/rand` and employs mutex locking to allow safe use with goroutines.
 
-If you want to use a more performant source please use NewUnlocked. Be aware that it is not goroutine safe.
+If you require a more performant source, you can use `NewUnlocked`.
+However, be aware that this source is not goroutine safe.
 
 ```go
 import rus_name_gen "github.com/oshokin/russian-name-generator"
 
-// Uses math/rand(Pseudo) with mutex locking
+// Uses math/rand(Pseudo) with mutex locking.
 faker := rus_name_gen.New(0)
 
-// Uses math/rand(Pseudo) with NO mutext locking
+// Uses math/rand(Pseudo) with NO mutex locking.
 // More performant but not goroutine safe.
 faker := rus_name_gen.NewUnlocked(0)
 
-// Uses crypto/rand(cryptographically secure) with mutext locking
+// Uses crypto/rand(cryptographically secure) with mutex locking.
 faker := rus_name_gen.NewCrypto()
 
-// Pass in your own random source
+// Pass in your own random source.
 faker := rus_name_gen.NewCustom()
 ```
 
 ## Global Rand Set
 
-If you would like to use the simple function calls but need to use something like
-crypto/rand you can override the default global with the random source that you want.
+If you would like to use the simple function calls, 
+but need to use a different random source like crypto/rand,
+you can override the default global with the random source that you want.
 
 ```go
 import rus_name_gen "github.com/oshokin/russian-name-generator"
@@ -148,32 +187,27 @@ import (
 
 func main() {
 	var (
-		// Generate 100 full names concurrently
+		// Generate 100 full names concurrently.
 		namesCount = 100
 		wg         sync.WaitGroup
 	)
 
 	wg.Add(namesCount)
+
 	for i := 0; i < namesCount; i++ {
 		go func(i int) {
 			defer wg.Done()
 
-			gender := rus_name_gen.GenderMale
-			if i%2 == 0 {
-				gender = rus_name_gen.GenderFemale
-			}
-
-			name := rus_name_gen.Name(gender, false)
-			patronymic := rus_name_gen.Patronymic(gender == rus_name_gen.GenderFemale, false)
-			surname := rus_name_gen.Surname(gender)
-
-			fmt.Printf("%s %s %s\n", name, patronymic, surname)
+			person := rus_name_gen.Person(nil)
+			fmt.Printf("%s %s %s\n", person.Name,
+				person.Patronymic,
+				person.Surname)
 		}(i)
 	}
 
 	wg.Wait()
 
-	// Transliterate a Russian text to Latin letters
+	// Transliterate a Russian text to Latin letters.
 	text := "Брат, братан, братишка, когда меня отпустит?"
 	transliteratedText := rus_name_gen.Transliterate(text)
 	fmt.Println(transliteratedText)
@@ -181,4 +215,5 @@ func main() {
 ```
 
 ## Contributing
-Contributions are welcome! If you find a bug or have a feature request, please open an issue or submit a pull request.
+Contributions are welcome!
+If you find a bug or have a feature request, please open an issue or submit a pull request.

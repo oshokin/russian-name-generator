@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestSeed(t *testing.T) {
+func TestSeed(_ *testing.T) {
 	Seed(0)
 }
 
