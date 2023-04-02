@@ -4,11 +4,15 @@
 
 ## Inspiration
 
-This project was inspired by the Go library [gofakeit](https://github.com/brianvoe/gofakeit), which provides similar functionality for generating random data across multiple categories.
+This project was inspired by the Go library [gofakeit](https://github.com/brianvoe/gofakeit), 
+
+which provides similar functionality for generating random data across multiple categories.
 
 ## Data Sets
 
-The project uses data sets of Russian names from the [russian-names](https://github.com/cybermatt/russian-names) repository. The patronymic grammatical rules are derived from the [linguistics_problems](https://github.com/roddar92/linguistics_problems) repository.
+The project uses data sets of Russian names from the [russian-names](https://github.com/cybermatt/russian-names) repository.
+
+The patronymic grammatical rules are derived from the [linguistics_problems](https://github.com/roddar92/linguistics_problems) repository.
 
 I would like to thank the authors of these repositories for sharing their work and making this project possible.
 
@@ -134,9 +138,11 @@ Parameters:
 ## Seed
 
 If you are using the default global usage and don't care about seeding, there's no need to set anything.
+
 `russian-name-generator` will seed it with a cryptographically secure number.
 
 If you need a reproducible outcome, you can set it via the Seed function call.
+
 Every example in this repository sets it for testing purposes.
 
 ```go
@@ -152,9 +158,11 @@ rus_name_gen.Seed(14000088) // Set it to whatever number you want
 ## Random Sources
 
 `russian-name-generator` supports multiple sources for generating random numbers. 
+
 By default, it uses `math/rand` and employs mutex locking to allow safe use with goroutines.
 
 If you require a more performant source, you can use `NewUnlocked`.
+
 However, be aware that this source is not goroutine safe.
 
 ```go
@@ -176,9 +184,7 @@ faker := rus_name_gen.NewCustom()
 
 ## Global Rand Set
 
-If you would like to use the simple function calls, 
-but need to use a different random source like crypto/rand,
-you can override the default global with the random source that you want.
+If you would like to use the simple function calls, but need to use a different random source like crypto/rand, you can override the default global with the random source that you want.
 
 ```go
 import rus_name_gen "github.com/oshokin/russian-name-generator"
@@ -230,4 +236,5 @@ func main() {
 
 ## Contributing
 Contributions are welcome!
+
 If you find a bug or have a feature request, please open an issue or submit a pull request.
